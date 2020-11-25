@@ -35,6 +35,14 @@ public class Id3 {
         tree.create_tree();
         tree.Display_attribute();
         tree.display_tree();
+
+        String Outlook = "sunny";
+        int Temp = 19;
+        String Wind = "TRUE";
+        String Date = "midweek";
+
+        tree.Decision(Outlook, Temp, Wind, Date);
+
     }
 
     public static void menu(){

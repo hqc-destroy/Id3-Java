@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ public class GenerateTree {
     TreeNode treenode = new TreeNode();
     HashMap <String , List<String>>  Main_Attribute = new HashMap <String , List<String>>();
     List<String> sort;
+    String decision;
 
     public GenerateTree( Vector listofattributes, List<Node> node ,  HashMap<String,Double > information_gain ,  HashMap<String,String > information_gain_subAttribute ){
         this.listofattributes = listofattributes;
@@ -110,7 +112,6 @@ public class GenerateTree {
     	 }
     	 else {
     		 int c = rel.size();
-    	
     		 for(int i = 0 ; i < c ; i++) {
     			 System.out.println(space+" "+rel.get(i)+":");
     			 System.out.println(space+"   "+child.get(i));
@@ -123,5 +124,70 @@ public class GenerateTree {
     		 }
     	 }
     	return 0;
+    }
+
+    void Decision(String Outlook, int Temp, String Wind, String Date){
+        String Temp1;
+        if (Temp >= 30){
+            Temp1 = "hot";
+        } else if (Temp < 30 && Temp >= 20){
+            Temp1 = "mild";
+        } else {
+            Temp1 = "cool";
+        }
+
+        ArrayList<String> list = new ArrayList<>();
+        list.add(Outlook);
+        list.add(Temp1);
+        list.add(Wind);
+        list.add(Date);
+
+        testTree(treenode.get_root(),list);
+        System.out.println("------------------------");
+        System.out.println("decision: " + decision);
+        System.out.println("------------------------");
+    }
+
+    void testTree(String parent, ArrayList<String> list){
+        List<String> rel = treenode.getRelation(parent);
+        List<String> child = treenode.getChild(parent);
+
+        int stt = -1;
+        int remove_list = -1;
+        for (int i = 0 ; i < list.size(); i ++){
+            for (int j = 0; j < rel.size(); j ++){
+                if (list.get(i).equals(rel.get(j))){
+                    remove_list = i;
+                    stt = j;
+                }
+            }
+        }
+        if (remove_list != -1){
+            list.remove(remove_list);
+        }
+
+        for (int j = rel.size()-1; j >= 0; j --){
+            if (stt == -1){
+                break;
+            } else if (stt != j){
+                rel.remove(j);
+                child.remove(j);
+            }
+        }
+
+        int c = rel.size();
+
+        for(int i = 0 ; i < c ; i++) {
+            if (child.get(i).equals("no")){
+                decision = "no";
+            } else if (child.get(i).equals("yes")){
+                decision =  "yes";
+            }
+
+            if(treenode.getChild(child.get(i)) == null )  {}
+            else {
+                testTree( child.get(i), list);
+            }
+        }
     }
 }
